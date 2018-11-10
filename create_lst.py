@@ -65,6 +65,7 @@ def main(argv):
 
 def create_lst_file(fname_lst,list):
    f_file_lst = open(fname_lst, "w")  # f_file_lst will need to be closed later, this is the file we will write to
+   entries=0
    for entry in list:
       index, img_file = entry.split(" ")
       img=cv2.imread(img_file)
@@ -89,7 +90,9 @@ def create_lst_file(fname_lst,list):
       lst_entry = lst_entry + "\t" + img_file
       #print lst_entry
       f_file_lst.write(lst_entry + '\n')
+      entries+=1
    f_file_lst.close() # We have finished writing to this LST file. Close it now
+   print "Number of samples in " + fname_lst + ": " + str(entries)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
