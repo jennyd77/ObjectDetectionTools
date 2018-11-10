@@ -35,7 +35,7 @@ def main(argv):
    # Create an indexed list of all image files in RAM
    r_ordered_list = []
    index=0
-   img_dir_path = img_dir + "/data/obj"
+   img_dir_path = os.path.join(img_dir,"data/obj")
    for file in glob.glob(img_dir_path + "/*.jpg"): 
       r_ordered_list.append(str(index) + " " + file)
       index += 1
@@ -73,6 +73,8 @@ def create_lst_file(fname_lst,list):
       #   where header consists of 4 items: num_header_items(4 in this case)<tab>max_len_label(we will use 5)<tab>img_width<tab>img_height
       lst_entry = str(index) + "\t4\t5\t" + str(width) + "\t" + str(height)
       individual_image_txt_file=os.path.splitext(img_file)[0] + '.txt'
+      if os.path.getsize(individual_image_txt_file) == 0: # If there are no objects labelled for this image, we will skip the image
+         continue
       with open(individual_image_txt_file) as f_ind_txt_file: #f_ind_txt_file will auto-close, this is the text file containing BB information for an individual image
          for object_bb in f_ind_txt_file: # Each individual txt file will contain one or more bounding box objects. We must parse each one.
             if object_bb[-1:] == "\n":
@@ -85,6 +87,7 @@ def create_lst_file(fname_lst,list):
             ymax = float(ymid) + (float(bb_height) / 2)
             lst_entry = lst_entry + "\t" + obj_class + ".0\t" + str(xmin) + "\t" + str(ymin) + "\t" + str(xmax) + "\t" + str(ymax) # Append current BB object to lst_entry
       lst_entry = lst_entry + "\t" + img_file
+      #print lst_entry
       f_file_lst.write(lst_entry + '\n')
    f_file_lst.close() # We have finished writing to this LST file. Close it now
 
